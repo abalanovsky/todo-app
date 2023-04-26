@@ -1,24 +1,46 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, {useContext, useState} from 'react';
 import './App.css';
+import TodoContext from "./components/TodoContext";
+import TodoList from "./components/TodoList";
+import TodoAdd from "./components/TodoAdd";
+
+export interface ToDoDataModel {
+  items: string[];
+  addToDo: (newToDo: string) => void;
+  updateToDo: (index: number, newToDo: string) => void;
+  deleteToDo: (index: number) => void;
+}
 
 function App() {
+  const [items, setItems] = useState<string[]>([]);
+  const addToDo = (newToDo: string) => {
+    setItems([...items, newToDo]);
+  }
+
+  const updateToDo = (index: number, newToDo: string) => {
+    const itemsCopy = [...items]
+    itemsCopy[index] = newToDo
+    setItems(itemsCopy)
+  }
+
+  const deleteToDo = (index: number) => {
+    setItems(items.filter((element, id) => id !== index))
+  }
+
+  const data = {
+    items,
+    addToDo,
+    updateToDo,
+    deleteToDo,
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="main-container">
+    <h1 className="heading">ToDo</h1>
+    <TodoContext.Provider value={data}>
+      <TodoAdd />
+      <TodoList />
+    </TodoContext.Provider>
     </div>
   );
 }
